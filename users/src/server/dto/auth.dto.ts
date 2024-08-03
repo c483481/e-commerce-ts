@@ -1,26 +1,11 @@
-import { Token } from "../../module/dto.module";
-import { UsersResult } from "./users.dto";
+import { BaseResult } from "../../module/dto.module";
 
-export type AuthLogin_Payload = {
+export interface RegisterPayload {
     email: string;
     password: string;
-    ip: string;
-};
+}
 
-export type AuthResult = UsersResult & {
-    accessToken: Token;
-    refreshToken: Token;
-};
-
-export type AuthRegister_Payload = {
+export interface UsersAuthResult extends BaseResult {
     email: string;
-    username: string;
-    password: string;
-    rePassword: string;
-};
-
-export type RefreshTokenResult = UsersResult & {
-    key: {
-        accessToken: Token;
-    };
-};
+    role: string;
+}

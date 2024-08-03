@@ -6,4 +6,6 @@ export interface AppRepositoryMap {
 
 export interface UsersAuthRepository {
     insert(payload: UsersAuthCreationAttributes): Promise<UsersAuthAttributes>;
+
+    findByEmail(email: string): Promise<UsersAuthAttributes | null>;
 }
