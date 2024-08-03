@@ -1,7 +1,14 @@
 import { Sequelize } from "sequelize";
+import { UsersAuth } from "./users-auth.model";
 
-export interface AppSqlModel {}
+export interface AppSqlModel {
+    UsersAuth: typeof UsersAuth;
+}
 
 export function initSqlModels(sequelize: Sequelize): AppSqlModel {
-    return {};
+    UsersAuth.initModels(sequelize);
+
+    return {
+        UsersAuth,
+    };
 }
