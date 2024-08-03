@@ -34,7 +34,6 @@ export interface ModifiedBy {
 }
 
 export interface BaseAttribute {
-    id: number;
     xid: string;
     updatedAt: Date;
     createdAt: Date;

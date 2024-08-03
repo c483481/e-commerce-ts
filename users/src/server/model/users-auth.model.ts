@@ -1,12 +1,13 @@
 import { CommonColumn } from "../../module/default.module";
 import { BaseAttribute, ModifiedBy } from "../../module/dto.module";
 import { Optional, Model, Sequelize, DataTypes } from "sequelize";
+import { BaseSequelizeAttribute } from "./common";
 
 const { id, xid, version, modifiedBy, updatedAt, createdAt } = CommonColumn;
 
 const tableName = "users-auth";
 
-export interface UsersAuthAttributes extends BaseAttribute {
+export interface UsersAuthAttributes extends BaseSequelizeAttribute {
     email: string;
     password: string;
     role: string;
