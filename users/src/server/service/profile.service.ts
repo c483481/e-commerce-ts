@@ -25,15 +25,22 @@ export class Profile extends BaseService implements ProfileService {
             throw errorResponses.getError("E_FOUND_1");
         }
 
+        if (userAuth.UsersProfile) {
+            throw errorResponses.getError("E_REC_1");
+        }
+
         const dateOfBirth = new Date(year, month, date, 12, 30, 0);
 
-        const createdValues = createData<UsersProfileCreationAttributes>({
-            userAuthId: userAuth.id,
-            firstName,
-            lastName,
-            address,
-            dateOfBirth,
-        });
+        const createdValues = createData<UsersProfileCreationAttributes>(
+            {
+                userAuthId: userAuth.id,
+                firstName,
+                lastName,
+                address,
+                dateOfBirth,
+            },
+            usersSession
+        );
 
         const result = await this.usersProfile.insert(createdValues);
 

@@ -2,6 +2,7 @@ import { CommonColumn } from "../../module/default.module";
 import { ModifiedBy } from "../../module/dto.module";
 import { Optional, Model, Sequelize, DataTypes } from "sequelize";
 import { BaseSequelizeAttribute } from "./common";
+import { UsersProfile } from "./user-profile.model";
 
 const { id, xid, version, modifiedBy, updatedAt, createdAt } = CommonColumn;
 
@@ -11,6 +12,7 @@ export interface UsersAuthAttributes extends BaseSequelizeAttribute {
     email: string;
     password: string;
     role: string;
+    UsersProfile?: UsersProfile;
 }
 
 export type UsersAuthCreationAttributes = Optional<UsersAuthAttributes, "id">;

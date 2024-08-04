@@ -14,6 +14,7 @@ export interface UsersProfileAttributes extends BaseSequelizeAttribute {
     lastName: string;
     address: string;
     dateOfBirth: Date;
+    UsersAuth?: UsersAuth;
 }
 
 export type UsersProfileCreationAttributes = Optional<UsersProfileAttributes, "id">;

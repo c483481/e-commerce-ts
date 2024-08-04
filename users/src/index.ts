@@ -9,6 +9,7 @@ import { Repository } from "./server/repository";
 import { AppRepositoryMap } from "./contract/repository.contract";
 import { Service } from "./server/service";
 import { AppServiceMap } from "./contract/service.contract";
+import { errorResponses } from "./response";
 
 start();
 
@@ -25,6 +26,8 @@ function initService(repository: AppRepositoryMap): AppServiceMap {
 }
 
 async function start(): Promise<void> {
+    errorResponses.init();
+
     const source = await datasource.init(config);
 
     const repository = initRepository(source);

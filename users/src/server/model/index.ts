@@ -11,6 +11,16 @@ export function initSqlModels(sequelize: Sequelize): AppSqlModel {
     UsersAuth.initModels(sequelize);
     UsersProfile.initModels(sequelize);
 
+    UsersAuth.hasOne(UsersProfile, {
+        sourceKey: "id",
+        foreignKey: "userAuthId",
+    });
+
+    UsersProfile.belongsTo(UsersAuth, {
+        foreignKey: "userAuthId",
+        targetKey: "id",
+    });
+
     return {
         UsersAuth,
         UsersProfile,
