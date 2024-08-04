@@ -10,6 +10,8 @@ export interface UsersAuthRepository {
     insert(payload: UsersAuthCreationAttributes): Promise<UsersAuthAttributes>;
 
     findByEmail(email: string): Promise<UsersAuthAttributes | null>;
+
+    findByXid(xid: string): Promise<UsersAuthAttributes | null>;
 }
 
 export interface UsersProfileRepository {

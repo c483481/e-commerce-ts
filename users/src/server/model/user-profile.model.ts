@@ -13,7 +13,7 @@ export interface UsersProfileAttributes extends BaseSequelizeAttribute {
     firstName: string;
     lastName: string;
     address: string;
-    dateOfBirth: string;
+    dateOfBirth: Date;
 }
 
 export type UsersProfileCreationAttributes = Optional<UsersProfileAttributes, "id">;
@@ -33,7 +33,7 @@ export class UsersProfile
     firstName!: string;
     lastName!: string;
     address!: string;
-    dateOfBirth!: string;
+    dateOfBirth!: Date;
 
     static initModels(sequelize: Sequelize): typeof UsersProfile {
         console.log(`Initiate Modles ${tableName}`);
