@@ -1,3 +1,5 @@
 import Validator from "fastest-validator";
 
-export const baseValidator = new Validator();
+export const baseValidator = new Validator({
+    useNewCustomCheckerFunction: true,
+});
