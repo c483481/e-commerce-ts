@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { AppServiceMap, AuthService } from "../../contract/service.contract";
 import { BaseController } from "./base.controller";
-import { RegisterPayload } from "../dto/auth.dto";
+import { AuthPayload } from "../dto/auth.dto";
 import { WrapAppHandler } from "../../utils/helper.utils";
 import { validate } from "../validate";
 import { AuthValidator } from "../validate/auth.validator";
@@ -21,9 +21,9 @@ export class AuthController extends BaseController {
     }
 
     postRegisterUser = async (req: Request): Promise<unknown> => {
-        const payload = req.body as RegisterPayload;
+        const payload = req.body as AuthPayload;
 
-        validate(AuthValidator.RegisterPayload, payload);
+        validate(AuthValidator.AuthPayload, payload);
 
         const result = await this.service.register(payload);
 
