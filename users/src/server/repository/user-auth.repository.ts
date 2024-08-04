@@ -19,6 +19,9 @@ export class SequelizeUsersAuthRepository extends BaseRepository implements User
             where: {
                 email,
             },
+            include: {
+                model: UsersProfile,
+            },
         });
     };
 
