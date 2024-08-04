@@ -85,6 +85,11 @@ export class MapErrorResponse {
                 success: false,
                 message: "Failed while update recource",
             },
+            E_REC_1: {
+                status: 400,
+                success: false,
+                message: "Duplicate Recource",
+            },
         };
         Object.entries(response).map(([key, value]) => {
             this.error.set(key, new ErrorResponse(Object.assign(value, { code: key })));

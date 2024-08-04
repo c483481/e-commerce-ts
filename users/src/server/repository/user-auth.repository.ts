@@ -1,5 +1,6 @@
 import { UsersAuthRepository } from "../../contract/repository.contract";
 import { AppDataSource } from "../../module/datasource.module";
+import { UsersProfile } from "../model/user-profile.model";
 import { UsersAuth, UsersAuthAttributes, UsersAuthCreationAttributes } from "../model/users-auth.model";
 import { BaseRepository } from "./base.repository";
 
@@ -18,6 +19,9 @@ export class SequelizeUsersAuthRepository extends BaseRepository implements User
             where: {
                 email,
             },
+            include: {
+                model: UsersProfile,
+            },
         });
     };
 
@@ -25,6 +29,9 @@ export class SequelizeUsersAuthRepository extends BaseRepository implements User
         return this.usersAuth.findOne({
             where: {
                 xid,
+            },
+            include: {
+                model: UsersProfile,
             },
         });
     };

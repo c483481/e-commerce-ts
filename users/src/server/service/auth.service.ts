@@ -9,6 +9,7 @@ import { DEFAULT_USER_ROLE } from "../constant/role.constant";
 import { AuthPayload, AuthResult, UsersAuthResult } from "../dto/auth.dto";
 import { UsersAuthAttributes, UsersAuthCreationAttributes } from "../model/users-auth.model";
 import { BaseService } from "./base.service";
+import { composeProfile } from "./profile.service";
 
 export class Auth extends BaseService implements AuthService {
     private usersAuthRepo!: UsersAuthRepository;
@@ -83,5 +84,6 @@ export function composeUsersAuth(row: UsersAuthAttributes): UsersAuthResult {
         modifiedBy: row.modifiedBy,
         updatedAt: toUnixEpoch(row.updatedAt),
         createdAt: toUnixEpoch(row.createdAt),
+        usersProfile: row.UsersProfile ? composeProfile(row.UsersProfile) : null,
     };
 }
