@@ -1,11 +1,17 @@
+import { UsersProfileAttributes, UsersProfileCreationAttributes } from "../server/model/user-profile.model";
 import { UsersAuthAttributes, UsersAuthCreationAttributes } from "../server/model/users-auth.model";
 
 export interface AppRepositoryMap {
     usersAuth: UsersAuthRepository;
+    usersProfile: UsersProfileRepository;
 }
 
 export interface UsersAuthRepository {
     insert(payload: UsersAuthCreationAttributes): Promise<UsersAuthAttributes>;
 
     findByEmail(email: string): Promise<UsersAuthAttributes | null>;
+}
+
+export interface UsersProfileRepository {
+    insert(payload: UsersProfileCreationAttributes): Promise<UsersProfileAttributes>;
 }
