@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { NextFunction, Request, RequestHandler, Response } from "express";
 import {
     BaseAttribute,
     BaseResult,
@@ -13,6 +13,21 @@ import { DEFAULT_USER_SESSION_ANONYMUS } from "../module/default.module";
 import { toUnixEpoch } from "./date.utils";
 import { ulid } from "ulidx";
 import { ERROR_UNAUTHORIZE } from "../response";
+
+export function WrapAppHandler(handler: (req: Request) => Promise<unknown> | unknown): RequestHandler {
+    return async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+        try {
+            const result = await handler(req);
+            return res.status(200).json({
+                success: true,
+                message: "OK",
+                data: result,
+            });
+        } catch (error) {
+            next(error);
+        }
+    };
+}
 
 export function saveUsersSession(req: Request, data: UserSession): void {
     req.app.locals.users = data;
