@@ -18,6 +18,8 @@ export class AuthController extends BaseController {
 
     initRoute(): void {
         this.router.post("/register", WrapAppHandler(this.postRegisterUser));
+
+        this.router.post("/login", WrapAppHandler(this.postLoginUser));
     }
 
     postRegisterUser = async (req: Request): Promise<unknown> => {
@@ -26,6 +28,16 @@ export class AuthController extends BaseController {
         validate(AuthValidator.AuthPayload, payload);
 
         const result = await this.service.register(payload);
+
+        return result;
+    };
+
+    postLoginUser = async (req: Request): Promise<unknown> => {
+        const payload = req.body as AuthPayload;
+
+        validate(AuthValidator.AuthPayload, payload);
+
+        const result = await this.service.login(payload);
 
         return result;
     };
