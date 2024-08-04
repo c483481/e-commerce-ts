@@ -1,11 +1,12 @@
 import { AppRepositoryMap, UsersAuthRepository } from "../../contract/repository.contract";
 import { AuthService } from "../../contract/service.contract";
 import { bcryptModule } from "../../module/bcrypt.module";
+import { jwtModule } from "../../module/jwt.module";
 import { errorResponses } from "../../response";
 import { toUnixEpoch } from "../../utils/date.utils";
 import { createData } from "../../utils/helper.utils";
 import { DEFAULT_USER_ROLE } from "../constant/role.constant";
-import { RegisterPayload, UsersAuthResult } from "../dto/auth.dto";
+import { AuthPayload, AuthResult, UsersAuthResult } from "../dto/auth.dto";
 import { UsersAuthAttributes, UsersAuthCreationAttributes } from "../model/users-auth.model";
 import { BaseService } from "./base.service";
 
@@ -15,7 +16,7 @@ export class Auth extends BaseService implements AuthService {
         this.usersAuthRepo = repository.usersAuth;
     }
 
-    register = async (payload: RegisterPayload): Promise<UsersAuthResult> => {
+    register = async (payload: AuthPayload): Promise<UsersAuthResult> => {
         const { email, password } = payload;
 
         const userAuth = await this.usersAuthRepo.findByEmail(email);
@@ -35,6 +36,41 @@ export class Auth extends BaseService implements AuthService {
         const result = await this.usersAuthRepo.insert(createdValues);
 
         return composeUsersAuth(result);
+    };
+
+    login = async (payload: AuthPayload): Promise<AuthResult> => {
+        const { email, password } = payload;
+
+        const userAuth = await this.usersAuthRepo.findByEmail(email);
+
+        if (!userAuth) {
+            throw errorResponses.getError("E_AUTH_2");
+        }
+
+        const verify: boolean = await bcryptModule.compare(password, userAuth.password);
+
+        if (!verify) {
+            throw errorResponses.getError("E_AUTH_2");
+        }
+
+        const token = jwtModule.issue(
+            {
+                xid: userAuth.xid,
+                email: userAuth.email,
+            },
+            userAuth.role
+        );
+
+        const refreshToken = jwtModule.issueRefresh(userAuth.xid, userAuth.role);
+
+        const result = composeUsersAuth(userAuth) as AuthResult;
+
+        result.token = {
+            accessToken: token,
+            refreshToken,
+        };
+
+        return result;
     };
 }
 
