@@ -1,5 +1,5 @@
 import { CommonColumn } from "../../module/default.module";
-import { BaseAttribute, ModifiedBy } from "../../module/dto.module";
+import { ModifiedBy } from "../../module/dto.module";
 import { Optional, Model, Sequelize, DataTypes } from "sequelize";
 import { BaseSequelizeAttribute } from "./common";
 
