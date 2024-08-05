@@ -26,6 +26,20 @@ export class SequelizeUsersProfileRepository extends BaseRepository implements U
         });
     };
 
+    findByXidAndUserAuthXid = async (xid: string, userXid: string): Promise<UsersProfileAttributes | null> => {
+        return this.usersProfile.findOne({
+            where: {
+                xid,
+            },
+            include: {
+                model: UsersAuth,
+                where: {
+                    xid: userXid,
+                },
+            },
+        });
+    };
+
     update = async (id: number, payload: Partial<UsersProfileAttributes>, version: number): Promise<number> => {
         const result = await this.usersProfile.update(payload, {
             where: {
