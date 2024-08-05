@@ -19,6 +19,8 @@ export class ProfileController extends BaseController {
 
     initRoute(): void {
         this.router.post("/", LogInMiddleware, WrapAppHandler(this.postCreateProfile));
+
+        this.router.get("/", LogInMiddleware, WrapAppHandler(this.getDetail));
     }
 
     postCreateProfile = async (req: Request): Promise<unknown> => {
@@ -29,6 +31,14 @@ export class ProfileController extends BaseController {
         payload.usersSession = getForceUsersSession(req);
 
         const result = await this.service.createProfile(payload);
+
+        return result;
+    };
+
+    getDetail = async (req: Request): Promise<unknown> => {
+        const userSession = getForceUsersSession(req);
+
+        const result = await this.service.getDetail(userSession);
 
         return result;
     };
