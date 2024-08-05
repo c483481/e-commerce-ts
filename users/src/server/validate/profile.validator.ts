@@ -25,7 +25,7 @@ export class ProfileValidator {
                 errors: unknown[],
                 _scema: unknown,
                 _name: unknown,
-                _parent: any,
+                _parent: unknown,
                 context: unknown
             ): unknown => {
                 const { data } = context as {
