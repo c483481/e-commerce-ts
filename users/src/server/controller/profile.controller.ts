@@ -1,6 +1,6 @@
 import { AppServiceMap, ProfileService } from "../../contract/service.contract";
 import { getForceUsersSession, WrapAppHandler } from "../../utils/helper.utils";
-import { CreateProfile_Payload } from "../dto/profile.dto";
+import { CreateProfile_Payload, UpdateProfile_Payload } from "../dto/profile.dto";
 import { LogInMiddleware } from "../middleware/log-in.middleware";
 import { validate } from "../validate";
 import { ProfileValidator } from "../validate/profile.validator";
@@ -21,6 +21,8 @@ export class ProfileController extends BaseController {
         this.router.post("/", LogInMiddleware, WrapAppHandler(this.postCreateProfile));
 
         this.router.get("/", LogInMiddleware, WrapAppHandler(this.getDetail));
+
+        this.router.put("/:xid", LogInMiddleware, WrapAppHandler(this.updateProfile));
     }
 
     postCreateProfile = async (req: Request): Promise<unknown> => {
@@ -39,6 +41,20 @@ export class ProfileController extends BaseController {
         const userSession = getForceUsersSession(req);
 
         const result = await this.service.getDetail(userSession);
+
+        return result;
+    };
+
+    updateProfile = async (req: Request): Promise<unknown> => {
+        const payload = req.body as UpdateProfile_Payload;
+
+        payload.xid = req.params.xid;
+
+        validate(ProfileValidator.UpdateProfile_Payload, payload);
+
+        payload.usersSession = getForceUsersSession(req);
+
+        const result = await this.service.updateProfile(payload);
 
         return result;
     };

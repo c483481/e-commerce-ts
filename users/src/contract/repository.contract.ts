@@ -18,4 +18,8 @@ export interface UsersProfileRepository {
     insert(payload: UsersProfileCreationAttributes): Promise<UsersProfileAttributes>;
 
     findByUserAuthXid(xid: string): Promise<UsersProfileAttributes | null>;
+
+    update(id: number, payload: Partial<UsersProfileAttributes>, version: number): Promise<number>;
+
+    findByXidAndUserAuthXid(xid: string, userXid: string): Promise<UsersProfileAttributes | null>;
 }

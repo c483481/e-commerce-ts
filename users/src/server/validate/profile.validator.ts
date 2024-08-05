@@ -46,4 +46,13 @@ export class ProfileValidator {
         },
         $$strict: true,
     });
+
+    static UpdateProfile_Payload = baseValidator.compile({
+        xid: "string|empty:false|required|min:26|max:26",
+        firstName: "string|empty:false|required|min:3|max:100",
+        lastName: "string|empty:false|required|min:3|max:100",
+        address: "string|empty:false|required|min:3|max:255",
+        version: "number|empty:false|required|min:1",
+        $$strict: true,
+    });
 }

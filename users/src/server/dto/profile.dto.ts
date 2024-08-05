@@ -16,3 +16,12 @@ export interface ProfileResult extends BaseResult {
     address: string;
     dateOfBirth: string;
 }
+
+export interface UpdateProfile_Payload {
+    xid: string;
+    firstName: string;
+    lastName: string;
+    address: string;
+    version: number;
+    usersSession: UserSession;
+}
