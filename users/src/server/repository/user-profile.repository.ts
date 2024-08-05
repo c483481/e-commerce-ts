@@ -25,4 +25,15 @@ export class SequelizeUsersProfileRepository extends BaseRepository implements U
             },
         });
     };
+
+    update = async (id: number, payload: Partial<UsersProfileAttributes>, version: number): Promise<number> => {
+        const result = await this.usersProfile.update(payload, {
+            where: {
+                id,
+                version,
+            },
+        });
+
+        return result[0];
+    };
 }
