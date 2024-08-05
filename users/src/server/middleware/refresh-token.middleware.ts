@@ -1,11 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { ERROR_FORBIDDEN, ERROR_UNAUTHORIZE } from "../../response";
 import { compareString } from "../../utils/compare.utils";
-import { getIp, saveUsersSession } from "../../utils/helper.utils";
-import { UserSession } from "../../module/dto.module";
 import { jwtModule } from "../../module/jwt.module";
+import { saveRefreshToken } from "../../utils/helper.utils";
 
-export function LogInMiddleware(req: Request, _res: Response, next: NextFunction): void {
+export function RefreshTokenMiddleware(req: Request, _res: Response, next: NextFunction): void {
     const accessToken = req.headers.authorization;
 
     if (!accessToken) {
@@ -20,13 +19,13 @@ export function LogInMiddleware(req: Request, _res: Response, next: NextFunction
     }
 
     try {
-        const verification = jwtModule.verify(token);
+        const verification = jwtModule.verifyRefreshToken(token);
 
-        const userSession = verification.data as UserSession;
+        delete req.headers.authorization;
 
-        userSession.ip = getIp(req);
+        const refreshToken = verification.data;
 
-        saveUsersSession(req, userSession);
+        saveRefreshToken(req, refreshToken);
         next();
     } catch (_error) {
         next(ERROR_FORBIDDEN);
