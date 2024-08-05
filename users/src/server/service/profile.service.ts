@@ -1,5 +1,6 @@
 import { AppRepositoryMap, UsersAuthRepository, UsersProfileRepository } from "../../contract/repository.contract";
 import { ProfileService } from "../../contract/service.contract";
+import { UserSession } from "../../module/dto.module";
 import { errorResponses } from "../../response";
 import { toUnixEpoch } from "../../utils/date.utils";
 import { createData } from "../../utils/helper.utils";
@@ -45,6 +46,18 @@ export class Profile extends BaseService implements ProfileService {
         const result = await this.usersProfile.insert(createdValues);
 
         return composeProfile(result);
+    };
+
+    getDetail = async (payload: UserSession): Promise<ProfileResult> => {
+        const { xid } = payload;
+
+        const userProfile = await this.usersProfile.findByUserAuthXid(xid);
+
+        if (!userProfile) {
+            throw errorResponses.getError("E_FOUND_1");
+        }
+
+        return composeProfile(userProfile);
     };
 }
 
