@@ -16,4 +16,6 @@ export interface UsersAuthRepository {
 
 export interface UsersProfileRepository {
     insert(payload: UsersProfileCreationAttributes): Promise<UsersProfileAttributes>;
+
+    findByUserAuthXid(xid: string): Promise<UsersProfileAttributes | null>;
 }
