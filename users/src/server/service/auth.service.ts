@@ -1,3 +1,4 @@
+import { isValid } from "ulidx";
 import { AppRepositoryMap, UsersAuthRepository } from "../../contract/repository.contract";
 import { AuthService } from "../../contract/service.contract";
 import { bcryptModule } from "../../module/bcrypt.module";
@@ -6,7 +7,7 @@ import { errorResponses } from "../../response";
 import { toUnixEpoch } from "../../utils/date.utils";
 import { createData } from "../../utils/helper.utils";
 import { DEFAULT_USER_ROLE } from "../constant/role.constant";
-import { AuthPayload, AuthResult, UsersAuthResult } from "../dto/auth.dto";
+import { AuthPayload, AuthResult, RefreshTokenResult, UsersAuthResult } from "../dto/auth.dto";
 import { UsersAuthAttributes, UsersAuthCreationAttributes } from "../model/users-auth.model";
 import { BaseService } from "./base.service";
 import { composeProfile } from "./profile.service";
@@ -69,6 +70,34 @@ export class Auth extends BaseService implements AuthService {
         result.token = {
             accessToken: token,
             refreshToken,
+        };
+
+        return result;
+    };
+
+    refreshToken = async (xid: string): Promise<RefreshTokenResult> => {
+        if (!isValid(xid)) {
+            throw errorResponses.getError("E_FOUND_1");
+        }
+
+        const userAuth = await this.usersAuthRepo.findByXid(xid);
+
+        if (!userAuth) {
+            throw errorResponses.getError("E_FOUND_1");
+        }
+
+        const result = composeUsersAuth(userAuth) as RefreshTokenResult;
+
+        const token = jwtModule.issue(
+            {
+                xid: userAuth.xid,
+                email: userAuth.email,
+            },
+            userAuth.role
+        );
+
+        result.token = {
+            accessToken: token,
         };
 
         return result;

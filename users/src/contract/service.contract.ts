@@ -1,5 +1,5 @@
 import { UserSession } from "../module/dto.module";
-import { AuthPayload, AuthResult, UsersAuthResult } from "../server/dto/auth.dto";
+import { AuthPayload, AuthResult, RefreshTokenResult, UsersAuthResult } from "../server/dto/auth.dto";
 import { CreateProfile_Payload, ProfileResult, UpdateProfile_Payload } from "../server/dto/profile.dto";
 
 export interface AppServiceMap {
@@ -11,6 +11,8 @@ export interface AuthService {
     register(payload: AuthPayload): Promise<UsersAuthResult>;
 
     login(payload: AuthPayload): Promise<AuthResult>;
+
+    refreshToken(xid: string): Promise<RefreshTokenResult>;
 }
 
 export interface ProfileService {
