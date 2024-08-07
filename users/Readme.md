@@ -22,3 +22,4 @@ This service exposes the following primary endpoints:
 -   JSON Web Tokens (JWT)
 -   Bcrypt
 -   Sequelize
+-   RabbitMQ
