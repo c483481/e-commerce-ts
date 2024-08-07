@@ -7,10 +7,12 @@ import { errorResponses } from "../../response";
 import { toUnixEpoch } from "../../utils/date.utils";
 import { createData } from "../../utils/helper.utils";
 import { DEFAULT_USER_ROLE } from "../constant/role.constant";
-import { AuthPayload, AuthResult, RefreshTokenResult, UsersAuthResult } from "../dto/auth.dto";
+import { AuthHistoryPayload, AuthPayload, AuthResult, RefreshTokenResult, UsersAuthResult } from "../dto/auth.dto";
 import { UsersAuthAttributes, UsersAuthCreationAttributes } from "../model/users-auth.model";
 import { BaseService } from "./base.service";
 import { composeProfile } from "./profile.service";
+import { amqp } from "../../module/amqp.module";
+import { amqpQueue } from "../constant/amqp-message.constant";
 
 export class Auth extends BaseService implements AuthService {
     private usersAuthRepo!: UsersAuthRepository;
@@ -41,7 +43,7 @@ export class Auth extends BaseService implements AuthService {
     };
 
     login = async (payload: AuthPayload): Promise<AuthResult> => {
-        const { email, password } = payload;
+        const { email, password, ip } = payload;
 
         const userAuth = await this.usersAuthRepo.findByEmail(email);
 
@@ -54,6 +56,13 @@ export class Auth extends BaseService implements AuthService {
         if (!verify) {
             throw errorResponses.getError("E_AUTH_2");
         }
+
+        const authHistoryPayload: AuthHistoryPayload = {
+            ip,
+            userXid: userAuth.xid,
+        };
+
+        await amqp.sendMessage(amqpQueue.authHistory, authHistoryPayload);
 
         const token = jwtModule.issue(
             {

@@ -2,7 +2,7 @@ import { Request } from "express";
 import { AppServiceMap, AuthService } from "../../contract/service.contract";
 import { BaseController } from "./base.controller";
 import { AuthPayload } from "../dto/auth.dto";
-import { getForceRefreshToken, WrapAppHandler } from "../../utils/helper.utils";
+import { getForceRefreshToken, getIp, WrapAppHandler } from "../../utils/helper.utils";
 import { validate } from "../validate";
 import { AuthValidator } from "../validate/auth.validator";
 import { RefreshTokenMiddleware } from "../middleware/refresh-token.middleware";
@@ -39,6 +39,8 @@ export class AuthController extends BaseController {
         const payload = req.body as AuthPayload;
 
         validate(AuthValidator.AuthPayload, payload);
+
+        payload.ip = getIp(req);
 
         const result = await this.service.login(payload);
 
