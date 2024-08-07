@@ -23,6 +23,8 @@ export interface AppConfiguration {
 
     jwtLifeTime: number;
     jwtRefreshLifeTime: number;
+
+    amqpUri: string;
 }
 
 function initConfig(): AppConfiguration {
@@ -50,6 +52,8 @@ function initConfig(): AppConfiguration {
 
         jwtLifeTime: parseToNumber(process.env.LIFE_TIME_TOKEN),
         jwtRefreshLifeTime: parseToNumber(process.env.REFRESH_LIFE_TIME_TOKEN),
+
+        amqpUri: parseToString(process.env.AMQP_URI),
     };
 }
 
