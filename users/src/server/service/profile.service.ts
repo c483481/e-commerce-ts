@@ -1,9 +1,13 @@
 import { AppRepositoryMap, UsersAuthRepository, UsersProfileRepository } from "../../contract/repository.contract";
 import { ProfileService } from "../../contract/service.contract";
+import { amqp } from "../../module/amqp.module";
 import { UserSession } from "../../module/dto.module";
 import { errorResponses } from "../../response";
 import { toUnixEpoch } from "../../utils/date.utils";
 import { createData, updateData } from "../../utils/helper.utils";
+import { amqpQueue } from "../constant/amqp-message.constant";
+import { logs } from "../constant/logs.constant";
+import { LogsPayload } from "../dto/logs.dto";
 import { CreateProfile_Payload, ProfileResult, UpdateProfile_Payload } from "../dto/profile.dto";
 import { UsersProfileAttributes, UsersProfileCreationAttributes } from "../model/user-profile.model";
 import { BaseService } from "./base.service";
@@ -45,6 +49,15 @@ export class Profile extends BaseService implements ProfileService {
 
         const result = await this.usersProfile.insert(createdValues);
 
+        const logsPayload: LogsPayload = {
+            ip: usersSession.ip,
+            userXid: usersSession.xid,
+            name: logs.profile,
+            data: `${usersSession.email} create their profile`,
+        };
+
+        await amqp.sendMessage(amqpQueue.logs, logsPayload);
+
         return composeProfile(result);
     };
 
@@ -84,6 +97,15 @@ export class Profile extends BaseService implements ProfileService {
         if (!result) {
             throw errorResponses.getError("E_ERR_1");
         }
+
+        const logsPayload: LogsPayload = {
+            ip: usersSession.ip,
+            userXid: usersSession.xid,
+            name: logs.profile,
+            data: `${usersSession.email} updated their profile`,
+        };
+
+        await amqp.sendMessage(amqpQueue.logs, logsPayload);
 
         Object.assign(userProfile, updatedValues);
 

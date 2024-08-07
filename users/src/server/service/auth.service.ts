@@ -13,6 +13,8 @@ import { BaseService } from "./base.service";
 import { composeProfile } from "./profile.service";
 import { amqp } from "../../module/amqp.module";
 import { amqpQueue } from "../constant/amqp-message.constant";
+import { LogsPayload } from "../dto/logs.dto";
+import { logs } from "../constant/logs.constant";
 
 export class Auth extends BaseService implements AuthService {
     private usersAuthRepo!: UsersAuthRepository;
@@ -62,7 +64,16 @@ export class Auth extends BaseService implements AuthService {
             userXid: userAuth.xid,
         };
 
+        const logsPayload: LogsPayload = {
+            ip,
+            userXid: userAuth.xid,
+            name: logs.loggedIn,
+            data: `${userAuth.email} logged in`,
+        };
+
         await amqp.sendMessage(amqpQueue.authHistory, authHistoryPayload);
+
+        await amqp.sendMessage(amqpQueue.logs, logsPayload);
 
         const token = jwtModule.issue(
             {
