@@ -38,7 +38,7 @@ async function start(): Promise<void> {
 
     await amqp.init(config.amqpUri);
 
-    initAmqpConsumer(service);
+    await initAmqpConsumer(service);
 
     const app = initApi(service);
     app.listen(config.port, () => {

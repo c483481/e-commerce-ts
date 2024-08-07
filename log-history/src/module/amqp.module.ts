@@ -5,7 +5,8 @@ class Amqp {
     private amqpChannel!: amqplib.Channel;
     private failedMessage: { queue: string; message: string }[] = [];
 
-    private readonly setNameQueue = new Set();
+    private readonly setNameQueue = new Set<string>();
+    private readonly setTopicQueue = new Set<string>();
 
     init = async (amqpUri: string): Promise<void> => {
         await this.createConnection(amqpUri);
@@ -29,11 +30,17 @@ class Amqp {
         });
     };
 
-    sendMessage = (queue: string, message: unknown) => {
+    sendMessage = async (queue: string, message: unknown): Promise<void> => {
         if (message === null || message === undefined) {
             console.log("[!] Message cannot be null");
             return;
         }
+
+        if (!this.setTopicQueue.has(queue)) {
+            await this.amqpChannel.assertQueue(queue, { durable: true });
+            this.setTopicQueue.add(queue);
+        }
+
         let buffer!: Buffer;
 
         switch (typeof message) {
@@ -67,16 +74,19 @@ class Amqp {
         this.failedMessage.push({ queue, message: buffer.toString() });
     };
 
-    createConsumer = <T>(
+    createConsumer = async <T>(
         queue: string,
         services: (payload: T) => Promise<unknown> | unknown,
         validate?: (payload: T) => boolean
-    ): void => {
+    ): Promise<void> => {
         if (this.setNameQueue.has(queue)) {
             console.log(`[!] Duplicate consumer queue: "${queue}"`);
             return;
         }
         this.setNameQueue.add(queue);
+
+        await this.amqpChannel.assertQueue(queue, { durable: true });
+        this.setTopicQueue.add(queue);
 
         console.log(`[*] initiate queue ${queue}`);
 
