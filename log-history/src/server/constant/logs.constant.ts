@@ -1,1 +1,1 @@
-export const LOGS = ["logged in"];
+export const LOGS = ["logged-in", "profile"];
