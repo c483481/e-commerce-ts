@@ -11,7 +11,6 @@ import { parseToNumber, parseToString } from "./parse.utils";
 import { compareString } from "./compare.utils";
 import { DEFAULT_USER_SESSION_ANONYMUS } from "../module/default.module";
 import { toUnixEpoch } from "./date.utils";
-import { ulid } from "ulidx";
 import { ERROR_UNAUTHORIZE } from "../response";
 
 export function WrapAppHandler(handler: (req: Request) => Promise<unknown> | unknown): RequestHandler {
@@ -109,11 +108,9 @@ export function compose<T, K>(arr: T[], fn: (attr: T) => K): K[] {
 
 export function createData<T extends BaseAttribute>(o: Omit<T, keyof BaseAttribute>, userSession?: UserSession): T {
     const timestamp = new Date();
-    const xid = ulid();
 
     return Object.assign(
         {
-            xid: xid,
             version: 1,
             createdAt: timestamp,
             updatedAt: timestamp,
@@ -137,7 +134,6 @@ export function updateData<T extends BaseAttribute>(
 
 export function composeResult<K extends BaseAttribute, T extends BaseResult>(k: K, t: Omit<T, keyof BaseResult>): T {
     return Object.assign(t, {
-        xid: k.xid,
         version: k.version,
         modifiedBy: k.modifiedBy,
         updatedAt: toUnixEpoch(k.updatedAt),
