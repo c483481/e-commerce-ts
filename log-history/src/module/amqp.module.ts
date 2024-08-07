@@ -136,6 +136,7 @@ class Amqp {
             this.amqpChannel = await this.amqpCon.createChannel();
 
             this.amqpChannel.prefetch(1);
+            console.log(`[*] Success connect to amqp: ${uri}`);
         } catch (error) {
             console.error("[!] An error connect to amqp :", error);
             throw new Error(`[!] Failed to connect to no sql with uri : ${uri}`);

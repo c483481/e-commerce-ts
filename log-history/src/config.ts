@@ -15,6 +15,8 @@ export interface AppConfiguration {
     mongoseeUsername: string;
     mongoseePassword: string;
     mongooseeAuthSource: string;
+
+    amqpUri: string;
 }
 
 function initConfig(): AppConfiguration {
@@ -34,6 +36,8 @@ function initConfig(): AppConfiguration {
         mongoseePassword: parseToString(process.env.MONGO_PASS),
         mongoseeUsername: parseToString(process.env.MONGO_USERNAME),
         mongooseeAuthSource: parseToString(process.env.MONGO_AUTH_SOURCE),
+
+        amqpUri: parseToString(process.env.AMQP_URI),
     };
 }
 

@@ -10,6 +10,8 @@ import { AppRepositoryMap } from "./contract/repository.contract";
 import { Service } from "./server/service";
 import { AppServiceMap } from "./contract/service.contract";
 import { errorResponses } from "./response";
+import { amqp } from "./module/amqp.module";
+import { initAmqpConsumer } from "./amqp";
 
 start();
 
@@ -33,6 +35,10 @@ async function start(): Promise<void> {
     const repository = initRepository(source);
 
     const service = initService(repository);
+
+    await amqp.init(config.amqpUri);
+
+    initAmqpConsumer(service);
 
     const app = initApi(service);
     app.listen(config.port, () => {
