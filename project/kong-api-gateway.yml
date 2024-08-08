@@ -1,0 +1,13 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+  - name: users
+    host: users-services
+    port: 80
+    protocol: http
+    routes:
+      - name: users-services
+        paths:
+          - /users
+        strip_path: true
