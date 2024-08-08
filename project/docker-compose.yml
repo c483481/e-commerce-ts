@@ -1,0 +1,87 @@
+version: "3.8"
+
+services:
+  users-services:
+    build:
+      context: ./../users
+      dockerfile: ./../users/Dockerfile
+    restart: always
+    depends_on:
+      - rabbitmq
+      - db-users
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      NODE_ENV: production
+      JWT_KEY: secret
+      JWT_REFRESH_KEY: secret123
+      BASE_URL: http://127.0.0.1
+      PORT: 80
+      DB_USER: postgres
+      DB_PASS: password
+      DB_NAME: users
+      DB_HOST: db-users
+      DB_DIALECT: postgres
+      DB_PORT: 5432
+      CORS: "*"
+      LIFE_TIME_TOKEN: 7200
+      REFRESH_LIFE_TIME_TOKEN: 172800
+      AMQP_URI: amqp://guest:guest@rabbitmq:5672
+
+  log-history-service:
+    build:
+      context: ./../log-history
+      dockerfile: ./../log-history/Dockerfile
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - rabbitmq
+      - db-logs
+    environment:
+      NODE_ENV: production
+      BASE_URL: http://127.0.0.1
+      PORT: 80
+      MONGO_URI: mongodb://db-logs:27017/logs
+      MONGO_USERNAME: admin
+      MONGO_PASS: password
+      MONGO_AUTH_SOURCE: admin
+      CORS: "*"
+      AMQP_URI: amqp://guest:guest@rabbitmq:5672
+
+  db-users:
+    image: "postgres:14.2"
+    deploy:
+      mode: replicated
+      replicas: 1
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users
+    volumes:
+      - ./db-data/users/:/var/lib/postgresql/data/
+
+  db-logs:
+    image: "mongo:4.2.16-bionic"
+    deploy:
+      mode: replicated
+      replicas: 1
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: logs
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./db-data/logs/:/data/db
+
+  rabbitmq:
+    image: "rabbitmq:3.12-alpine"
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    volumes:
+      - ./db-data/rabbitmq/:/var/lib/rabbitmq/
