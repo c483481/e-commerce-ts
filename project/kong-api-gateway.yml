@@ -35,4 +35,8 @@ plugins:
         - X-Auth-Token
       credentials: true
       max_age: 3600
-      
+  - name: request-size-limiting
+    config:
+      allowed_payload_size: 50
+      require_content_length: false
+      size_unit: kilobytes
