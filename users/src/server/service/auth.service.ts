@@ -2,7 +2,6 @@ import { isValid } from "ulidx";
 import { AppRepositoryMap, UsersAuthRepository } from "../../contract/repository.contract";
 import { AuthService } from "../../contract/service.contract";
 import { bcryptModule } from "../../module/bcrypt.module";
-import { jwtModule } from "../../module/jwt.module";
 import { errorResponses } from "../../response";
 import { toUnixEpoch } from "../../utils/date.utils";
 import { createData } from "../../utils/helper.utils";
@@ -15,6 +14,7 @@ import { amqp } from "../../module/amqp.module";
 import { amqpQueue } from "../constant/amqp-message.constant";
 import { LogsPayload } from "../dto/logs.dto";
 import { logs } from "../constant/logs.constant";
+import { tokenModule } from "../../module/token.module";
 
 export class Auth extends BaseService implements AuthService {
     private usersAuthRepo!: UsersAuthRepository;
@@ -71,26 +71,19 @@ export class Auth extends BaseService implements AuthService {
             data: `${userAuth.email} logged in`,
         };
 
-        await amqp.sendMessage(amqpQueue.authHistory, authHistoryPayload);
+        const [token] = await Promise.all([
+            tokenModule.generateToken(userAuth.xid, userAuth.email, userAuth.role),
+            amqp.sendMessage(amqpQueue.authHistory, authHistoryPayload),
+            amqp.sendMessage(amqpQueue.logs, logsPayload),
+        ]);
 
-        await amqp.sendMessage(amqpQueue.logs, logsPayload);
-
-        const token = jwtModule.issue(
-            {
-                xid: userAuth.xid,
-                email: userAuth.email,
-            },
-            userAuth.role
-        );
-
-        const refreshToken = jwtModule.issueRefresh(userAuth.xid, userAuth.role);
+        if (!token) {
+            throw errorResponses.getError("E_SER_1");
+        }
 
         const result = composeUsersAuth(userAuth) as AuthResult;
 
-        result.token = {
-            accessToken: token,
-            refreshToken,
-        };
+        result.token = token;
 
         return result;
     };
@@ -108,17 +101,13 @@ export class Auth extends BaseService implements AuthService {
 
         const result = composeUsersAuth(userAuth) as RefreshTokenResult;
 
-        const token = jwtModule.issue(
-            {
-                xid: userAuth.xid,
-                email: userAuth.email,
-            },
-            userAuth.role
-        );
+        const token = await tokenModule.generateAccessToken(userAuth.xid, userAuth.email, userAuth.role);
 
-        result.token = {
-            accessToken: token,
-        };
+        if (!token) {
+            throw errorResponses.getError("E_SER_1");
+        }
+
+        result.token = token;
 
         return result;
     };

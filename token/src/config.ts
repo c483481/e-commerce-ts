@@ -8,19 +8,14 @@ export interface AppConfiguration {
 
     baseUrl: string;
 
+    jwtKey: string;
+    jwtRefreshKey: string;
+
     port: number;
     cors: string[];
 
-    dbUser: string;
-    dbPass: string;
-    dbName: string;
-    dbPort: number;
-    dbHost: string;
-    dbDialect: string;
-
-    amqpUri: string;
-
-    tokenHost: string;
+    jwtLifeTime: number;
+    jwtRefreshLifeTime: number;
 }
 
 function initConfig(): AppConfiguration {
@@ -36,16 +31,11 @@ function initConfig(): AppConfiguration {
                 return str.trim();
             }),
 
-        dbHost: parseToString(process.env.DB_HOST, "localhost"),
-        dbName: parseToString(process.env.DB_NAME, "newdb"),
-        dbUser: parseToString(process.env.DB_USER, "root"),
-        dbPass: parseToString(process.env.DB_PASS, "root"),
-        dbDialect: parseToString(process.env.DB_DIALECT, "mysql"),
-        dbPort: parseToNumber(process.env.DB_PORT, 3306),
+        jwtKey: parseToString(process.env.JWT_KEY, "secret1"),
+        jwtRefreshKey: parseToString(process.env.JWT_REFRESH_KEY, "secret2"),
 
-        amqpUri: parseToString(process.env.AMQP_URI, "amqp://localhost:5672"),
-
-        tokenHost: parseToString(process.env.TOKEN_HOST, "http://localhost:80"),
+        jwtLifeTime: parseToNumber(process.env.LIFE_TIME_TOKEN, 3600),
+        jwtRefreshLifeTime: parseToNumber(process.env.REFRESH_LIFE_TIME_TOKEN, 86400),
     };
 }
 

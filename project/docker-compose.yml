@@ -20,6 +20,22 @@ services:
     volumes:
       - ./kong-api-gateway.yml:/usr/local/kong/declarative/kong.yml
 
+  token-services:
+    build:
+      context: ./../token
+      dockerfile: ./../token/Dockerfile
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      BASE_URL: http://127.0.0.1
+      PORT: 80
+      JWT_KEY: secretAccessToken
+      JWT_REFRESH_KEY: secretRefreshToken
+      LIFE_TIME_TOKEN: 7200
+      REFRESH_LIFE_TIME_TOKEN: 172800
+
   users-services:
     build:
       context: ./../users
@@ -47,6 +63,7 @@ services:
       LIFE_TIME_TOKEN: 7200
       REFRESH_LIFE_TIME_TOKEN: 172800
       AMQP_URI: amqp://guest:guest@rabbitmq:5672
+      TOKEN_HOST: http://token-services
 
   log-history-service:
     build:

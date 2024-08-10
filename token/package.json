@@ -6,21 +6,16 @@
     "author": "c483481",
     "license": "ISC",
     "scripts": {
-        "start": "npm run db:up && node ./build/index.js",
+        "start": "node ./build/index.js",
         "build": "tsc -p .",
         "start:dev": "ts-node-dev --respawn --transpile-only src/index.ts",
         "lint": "npx eslint . --ext .ts",
-        "format": "npx prettier --write \"src/**/*.ts\"",
-        "db:setup": "npx sequelize db:create && npx sequelize db:migrate",
-        "db:up": "npx sequelize db:migrate",
-        "db:down": "npx sequelize db:migrate:undo",
-        "db:restart": "npx sequelize db:drop && npm run db:setup"
+        "format": "npx prettier --write \"src/**/*.ts\""
     },
     "devDependencies": {
-        "@types/amqplib": "^0.10.5",
-        "@types/bcrypt": "^5.0.2",
         "@types/cors": "^2.8.17",
         "@types/express": "^4.17.21",
+        "@types/jsonwebtoken": "^9.0.6",
         "@types/node": "^22.1.0",
         "@types/validator": "^13.12.0",
         "@typescript-eslint/eslint-plugin": "^5.54.1",
@@ -35,18 +30,11 @@
         "typescript": "^4.9.5"
     },
     "dependencies": {
-        "amqplib": "^0.10.4",
-        "axios": "^1.7.3",
-        "bcrypt": "^5.1.1",
         "cors": "^2.8.5",
         "dotenv": "^16.4.5",
         "express": "^4.19.2",
         "fastest-validator": "^1.19.0",
         "helmet": "^7.1.0",
-        "pg": "^8.12.0",
-        "pg-hstore": "^2.3.4",
-        "sequelize": "^6.37.3",
-        "sequelize-cli": "^6.6.2",
-        "ulidx": "^2.4.0"
+        "jsonwebtoken": "^9.0.2"
     }
 }

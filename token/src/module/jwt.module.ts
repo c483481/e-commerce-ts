@@ -1,5 +1,5 @@
 import { config } from "../config";
-import { sign, verify } from "jsonwebtoken";
+import { sign, SignOptions, verify } from "jsonwebtoken";
 import { EncodeRefreshToken, EncodeToken, JwtResult, UserAuthToken } from "./dto.module";
 
 class JwtModule {
@@ -9,10 +9,15 @@ class JwtModule {
     private readonly jwtRefreshLifeTime = config.jwtRefreshLifeTime;
 
     issue = (data: UserAuthToken, audience?: string): JwtResult => {
-        const token = sign({ data: { xid: data.xid, email: data.email } }, this.jwtKey, {
+        const options: SignOptions = {
             expiresIn: this.jwtLifeTime,
-            audience,
-        });
+        };
+
+        if (audience) {
+            options.audience = audience;
+        }
+
+        const token = sign({ data: { xid: data.xid, email: data.email } }, this.jwtKey, options);
 
         return {
             token,
@@ -21,9 +26,15 @@ class JwtModule {
     };
 
     issueRefresh = (xid: string, audience?: string): JwtResult => {
-        const token = sign({ data: { xid } }, this.jwtRefreshKey, {
-            audience,
-        });
+        const options: SignOptions = {
+            expiresIn: this.jwtRefreshLifeTime,
+        };
+
+        if (audience) {
+            options.audience = audience;
+        }
+
+        const token = sign({ data: { xid } }, this.jwtRefreshKey, options);
 
         return {
             token,
