@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import { ERROR_FORBIDDEN, ERROR_UNAUTHORIZE } from "../../response";
+import { ERROR_FORBIDDEN, ERROR_UNAUTHORIZE, errorResponses } from "../../response";
 import { compareString } from "../../utils/compare.utils";
-import { jwtModule } from "../../module/jwt.module";
 import { saveRefreshToken } from "../../utils/helper.utils";
+import { tokenModule } from "../../module/token.module";
 
-export function RefreshTokenMiddleware(req: Request, _res: Response, next: NextFunction): void {
+export async function RefreshTokenMiddleware(req: Request, _res: Response, next: NextFunction): Promise<void> {
     const accessToken = req.headers.authorization;
 
     if (!accessToken) {
@@ -18,16 +18,20 @@ export function RefreshTokenMiddleware(req: Request, _res: Response, next: NextF
         return;
     }
 
-    try {
-        const verification = jwtModule.verifyRefreshToken(token);
+    const verification = await tokenModule.checkRefreshToken(token);
 
-        delete req.headers.authorization;
-
-        const refreshToken = verification.data;
-
-        saveRefreshToken(req, refreshToken);
-        next();
-    } catch (_error) {
-        next(ERROR_FORBIDDEN);
+    if (!verification) {
+        return next(errorResponses.getError("E_SER_1"));
     }
+
+    if (verification === "unauthorize") {
+        return next(ERROR_UNAUTHORIZE);
+    }
+
+    if (verification === "forbidden") {
+        return next(ERROR_FORBIDDEN);
+    }
+
+    saveRefreshToken(req, verification);
+    return next();
 }

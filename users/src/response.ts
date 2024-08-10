@@ -90,6 +90,11 @@ export class MapErrorResponse {
                 success: false,
                 message: "Duplicate Recource",
             },
+            E_SER_1: {
+                status: 500,
+                success: false,
+                message: "Failed To Call Another Service",
+            },
         };
         Object.entries(response).map(([key, value]) => {
             this.error.set(key, new ErrorResponse(Object.assign(value, { code: key })));
