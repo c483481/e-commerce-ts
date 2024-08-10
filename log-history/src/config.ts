@@ -23,21 +23,21 @@ function initConfig(): AppConfiguration {
     return {
         isProduction: compareString(parseToString(process.env.NODE_ENV), "production"),
 
-        baseUrl: parseToString(process.env.BASE_URL),
+        baseUrl: parseToString(process.env.BASE_URL, "http://localhost"),
 
-        port: parseToNumber(process.env.PORT, 3000),
-        cors: parseToString(process.env.CORS)
+        port: parseToNumber(process.env.PORT, 80),
+        cors: parseToString(process.env.CORS, "*")
             .split(",")
             .map((str) => {
                 return str.trim();
             }),
 
-        mongoseeUri: parseToString(process.env.MONGO_URI),
+        mongoseeUri: parseToString(process.env.MONGO_URI, "mongodb://localhost:27017/collection"),
         mongoseePassword: parseToString(process.env.MONGO_PASS),
         mongoseeUsername: parseToString(process.env.MONGO_USERNAME),
-        mongooseeAuthSource: parseToString(process.env.MONGO_AUTH_SOURCE),
+        mongooseeAuthSource: parseToString(process.env.MONGO_AUTH_SOURCE, "admin"),
 
-        amqpUri: parseToString(process.env.AMQP_URI),
+        amqpUri: parseToString(process.env.AMQP_URI, "amqp://localhost:5672"),
     };
 }
 
