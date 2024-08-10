@@ -31,29 +31,29 @@ function initConfig(): AppConfiguration {
     return {
         isProduction: compareString(parseToString(process.env.NODE_ENV), "production"),
 
-        jwtKey: parseToString(process.env.JWT_KEY),
-        jwtRefreshKey: parseToString(process.env.JWT_REFRESH_KEY),
+        jwtKey: parseToString(process.env.JWT_KEY, "secret1"),
+        jwtRefreshKey: parseToString(process.env.JWT_REFRESH_KEY, "secret2"),
 
-        baseUrl: parseToString(process.env.BASE_URL),
+        baseUrl: parseToString(process.env.BASE_URL, "http://localhost"),
 
-        port: parseToNumber(process.env.PORT, 3000),
-        cors: parseToString(process.env.CORS)
+        port: parseToNumber(process.env.PORT, 80),
+        cors: parseToString(process.env.CORS, "*")
             .split(",")
             .map((str) => {
                 return str.trim();
             }),
 
-        dbHost: parseToString(process.env.DB_HOST),
-        dbName: parseToString(process.env.DB_NAME),
-        dbUser: parseToString(process.env.DB_USER),
-        dbPass: parseToString(process.env.DB_PASS),
+        dbHost: parseToString(process.env.DB_HOST, "localhost"),
+        dbName: parseToString(process.env.DB_NAME, "newdb"),
+        dbUser: parseToString(process.env.DB_USER, "root"),
+        dbPass: parseToString(process.env.DB_PASS, "root"),
         dbDialect: parseToString(process.env.DB_DIALECT, "mysql"),
         dbPort: parseToNumber(process.env.DB_PORT, 3306),
 
-        jwtLifeTime: parseToNumber(process.env.LIFE_TIME_TOKEN),
-        jwtRefreshLifeTime: parseToNumber(process.env.REFRESH_LIFE_TIME_TOKEN),
+        jwtLifeTime: parseToNumber(process.env.LIFE_TIME_TOKEN, 3600),
+        jwtRefreshLifeTime: parseToNumber(process.env.REFRESH_LIFE_TIME_TOKEN, 86400),
 
-        amqpUri: parseToString(process.env.AMQP_URI),
+        amqpUri: parseToString(process.env.AMQP_URI, "amqp://localhost:5672"),
     };
 }
 
