@@ -17,6 +17,7 @@ This project comprises several microservices:
 5. Chat Service
 6. Notification Service
 7. Inventory Service
+8. Token Service
 
 ## Technologies
 
