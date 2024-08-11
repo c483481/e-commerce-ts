@@ -1,3 +1,4 @@
+import { List_Payload, ListResult } from "../module/dto.module";
 import { AuthHistoryResult, CreateAuthHistory_Payload } from "../server/dto/auth-history.dto";
 import { CreateLogs_Payload, LogsResult } from "../server/dto/logs.dto";
 
@@ -12,4 +13,6 @@ export interface AuthHistoryService {
 
 export interface LogsService {
     create(payload: CreateLogs_Payload): Promise<LogsResult>;
+
+    getList(payload: List_Payload): Promise<ListResult<LogsResult>>;
 }

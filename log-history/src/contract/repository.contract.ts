@@ -1,3 +1,4 @@
+import { FindResult, List_Payload } from "../module/dto.module";
 import { AuthHistoryAttribute, AuthHistoryCreationAttribute } from "../server/model/auth-history.model";
 import { LogsAttribute, LogsCreationAttribute } from "../server/model/logs.model";
 
@@ -12,4 +13,6 @@ export interface AuthHistoryRepository {
 
 export interface LogsRepository {
     insert(payload: LogsCreationAttribute): Promise<LogsAttribute>;
+
+    findLogs(payload: List_Payload): Promise<FindResult<LogsAttribute>>;
 }

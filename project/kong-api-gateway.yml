@@ -11,6 +11,17 @@ services:
         paths:
           - /users
         strip_path: true
+
+  - name: logs
+    host: log-history-service
+    port: 80
+    protocol: http
+    routes:
+      - name: logs-services
+        paths:
+          - /logs
+        strip_path: true
+
 plugins:
   - name: cors
     config:
