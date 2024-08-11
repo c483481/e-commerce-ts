@@ -19,7 +19,6 @@ This service exposes the following primary endpoints:
 -   Express.js
 -   TypeScript
 -   PostgreSQL
--   JSON Web Tokens (JWT)
 -   Bcrypt
 -   Sequelize
 -   RabbitMQ
