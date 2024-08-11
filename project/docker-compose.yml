@@ -86,6 +86,7 @@ services:
       MONGO_AUTH_SOURCE: admin
       CORS: "*"
       AMQP_URI: amqp://guest:guest@rabbitmq:5672
+      TOKEN_HOST: http://token-services
 
   db-users:
     image: "postgres:14.2"

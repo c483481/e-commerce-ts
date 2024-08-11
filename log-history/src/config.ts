@@ -17,6 +17,8 @@ export interface AppConfiguration {
     mongooseeAuthSource: string;
 
     amqpUri: string;
+
+    tokenHost: string;
 }
 
 function initConfig(): AppConfiguration {
@@ -38,6 +40,8 @@ function initConfig(): AppConfiguration {
         mongooseeAuthSource: parseToString(process.env.MONGO_AUTH_SOURCE, "admin"),
 
         amqpUri: parseToString(process.env.AMQP_URI, "amqp://localhost:5672"),
+
+        tokenHost: parseToString(process.env.TOKEN_HOST, "http://localhost:80"),
     };
 }
 
