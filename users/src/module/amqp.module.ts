@@ -149,9 +149,15 @@ class Amqp {
             console.log(`[*] Success connect to amqp: ${uri}`);
         } catch (error) {
             console.error("[!] An error connect to amqp :", error);
-            throw new Error(`[!] Failed to connect to no sql with uri : ${uri}`);
+            console.log("[!] try again in 2 seconds");
+            await this.delay();
+            return this.createConnection(uri);
         }
     };
+
+    private delay(): Promise<void> {
+        return new Promise((resolve) => setTimeout(resolve, 2000));
+    }
 }
 
 export const amqp = new Amqp();
