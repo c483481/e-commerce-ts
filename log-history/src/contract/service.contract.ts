@@ -9,6 +9,8 @@ export interface AppServiceMap {
 
 export interface AuthHistoryService {
     create(payload: CreateAuthHistory_Payload): Promise<AuthHistoryResult>;
+
+    getList(payload: List_Payload): Promise<ListResult<AuthHistoryResult>>;
 }
 
 export interface LogsService {

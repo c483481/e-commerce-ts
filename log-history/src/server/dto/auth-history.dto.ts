@@ -6,5 +6,6 @@ export interface CreateAuthHistory_Payload {
 }
 
 export interface AuthHistoryResult extends BaseResult {
+    xid: string;
     ip: string;
 }

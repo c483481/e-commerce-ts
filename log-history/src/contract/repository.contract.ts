@@ -9,6 +9,8 @@ export interface AppRepositoryMap {
 
 export interface AuthHistoryRepository {
     insert(payload: AuthHistoryCreationAttribute): Promise<AuthHistoryAttribute>;
+
+    findAuthHistory(payload: List_Payload): Promise<FindResult<AuthHistoryAttribute>>;
 }
 
 export interface LogsRepository {
