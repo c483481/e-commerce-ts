@@ -27,13 +27,19 @@ class DataSources {
             console.log(`Success to connect : ${config.mongoseeUri}`);
         } catch (error) {
             console.error("An error connect to mongodb :", error);
-            throw new Error(`Failed to connect to no sql with uri : ${config.mongoseeUri}`);
+            console.log("try again in 2 seconds");
+            await this.delay();
+            return this.initMongosee(config);
         }
 
         const noSqlModel = initNoSqlModels();
 
         return noSqlModel;
     };
+
+    private delay(): Promise<void> {
+        return new Promise((resolve) => setTimeout(resolve, 2000));
+    }
 }
 
 export const datasource = new DataSources();

@@ -1,6 +1,7 @@
 import { Dialect, Sequelize } from "sequelize";
 import { AppSqlModel, initSqlModels } from "../server/model";
 import { AppConfiguration } from "../config";
+import { exec } from "child_process";
 
 export interface AppDataSource {
     sql: Sequelize;
@@ -31,11 +32,19 @@ class DataSources {
         const sqlModel = initSqlModels(conn);
 
         try {
+            await conn.authenticate();
+            console.log("successfully connect to database");
+
+            const migrationOutput = await this.execPromise("npx sequelize db:migrate");
+            console.log(`Migration output: ${migrationOutput}`);
+
             await conn.sync();
             console.log(`All models in Sequelize were synchronized successfully in database : ${config.dbName}.`);
         } catch (error) {
             console.error("An error occurred while synchronizing the models:", error);
-            throw new Error("Failed to connect to sql");
+            console.log("try again in 2 seconds");
+            await this.delay();
+            return this.initSequelize(config);
         }
 
         return {
@@ -43,6 +52,26 @@ class DataSources {
             sqlModel: sqlModel,
         };
     };
+
+    private execPromise = async (command: string): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            exec(command, (error, stdout, stderr) => {
+                if (error) {
+                    reject(`Error executing command: ${error.message}`);
+                    return;
+                }
+                if (stderr) {
+                    reject(`Command stderr: ${stderr}`);
+                    return;
+                }
+                resolve(stdout);
+            });
+        });
+    };
+
+    private delay(): Promise<void> {
+        return new Promise((resolve) => setTimeout(resolve, 2000));
+    }
 }
 
 function getDialect(str: string): Dialect {

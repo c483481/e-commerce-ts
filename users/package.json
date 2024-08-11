@@ -6,7 +6,7 @@
     "author": "c483481",
     "license": "ISC",
     "scripts": {
-        "start": "npm run db:up && node ./build/index.js",
+        "start": "node ./build/index.js",
         "build": "tsc -p .",
         "start:dev": "ts-node-dev --respawn --transpile-only src/index.ts",
         "lint": "npx eslint . --ext .ts",
