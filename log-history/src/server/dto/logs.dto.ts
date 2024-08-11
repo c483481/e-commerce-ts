@@ -8,6 +8,7 @@ export interface CreateLogs_Payload {
 }
 
 export interface LogsResult extends BaseResult {
+    xid: string;
     ip: string;
     name: string;
     data: string;
