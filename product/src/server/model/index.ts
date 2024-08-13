@@ -1,7 +1,14 @@
 import { Sequelize } from "sequelize";
+import { Category } from "./category.model";
 
-export interface AppSqlModel {}
+export interface AppSqlModel {
+    Category: typeof Category;
+}
 
 export function initSqlModels(sequelize: Sequelize): AppSqlModel {
-    return {};
+    Category.initModels(sequelize);
+
+    return {
+        Category,
+    };
 }
