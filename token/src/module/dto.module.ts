@@ -1,13 +1,15 @@
+import { JwtPayload } from "jsonwebtoken";
+
 export interface UserAuthToken {
     xid: string;
     email: string;
 }
 
-export type EncodeToken = {
+export type EncodeToken = JwtPayload & {
     data: UserAuthToken;
 };
 
-export type EncodeRefreshToken = {
+export type EncodeRefreshToken = JwtPayload & {
     data: {
         xid: string;
     };

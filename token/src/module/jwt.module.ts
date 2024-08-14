@@ -1,5 +1,5 @@
 import { config } from "../config";
-import { sign, SignOptions, verify } from "jsonwebtoken";
+import { JwtPayload, sign, SignOptions, verify } from "jsonwebtoken";
 import { EncodeRefreshToken, EncodeToken, JwtResult, UserAuthToken } from "./dto.module";
 
 class JwtModule {
