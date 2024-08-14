@@ -26,3 +26,9 @@ export function parseToNumber(value: unknown, defaultValue?: number): number {
     const parsedValue = Number(value);
     return !isNaN(parsedValue) ? parsedValue : defaultValue || 0;
 }
+
+export function parseToBoolean(value: unknown): boolean {
+    const strValue = parseToString(value);
+
+    return strValue === "true";
+}

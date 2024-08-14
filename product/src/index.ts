@@ -10,6 +10,9 @@ import { AppRepositoryMap } from "./contract/repository.contract";
 import { Service } from "./server/service";
 import { AppServiceMap } from "./contract/service.contract";
 import { errorResponses } from "./response";
+import { bucket } from "./constant/minio.constant";
+import { minioModule } from "./module/minio.module";
+import { amqp } from "./module/amqp.module";
 
 start();
 
@@ -25,10 +28,27 @@ function initService(repository: AppRepositoryMap): AppServiceMap {
     return services;
 }
 
+async function initSource() {
+    return Promise.all([
+        datasource.init(config),
+        minioModule.init(
+            {
+                endPoint: config.minioEndpoint,
+                port: config.minioPort,
+                useSSL: config.minioSSL,
+                accessKey: config.minioAccessKey,
+                secretKey: config.minioSecretKey,
+            },
+            Object.values(bucket)
+        ),
+        amqp.init(config.amqpUri),
+    ]);
+}
+
 async function start(): Promise<void> {
     errorResponses.init();
 
-    const source = await datasource.init(config);
+    const [source] = await initSource();
 
     const repository = initRepository(source);
 
