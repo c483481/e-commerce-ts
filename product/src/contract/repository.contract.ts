@@ -1,4 +1,4 @@
-import { FindResult, List_Payload } from "../module/dto.module";
+import { FindResult, GetDetail_Payload, List_Payload } from "../module/dto.module";
 import { CategoryAttributes, CategoryCreationAttributes } from "../server/model/category.model";
 
 export interface AppRepositoryMap {
@@ -11,4 +11,6 @@ export interface CategoryRepository {
     findByXid(xid: string): Promise<CategoryAttributes | null>;
 
     findList(payload: List_Payload): Promise<FindResult<CategoryAttributes>>;
+
+    getDetailImage(payload: GetDetail_Payload): Promise<Buffer>;
 }

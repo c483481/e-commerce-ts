@@ -68,6 +68,28 @@ export class Category extends BaseService implements CategoryService {
             count: result.count,
         };
     };
+
+    getDetailImage = async (payload: GetDetail_Payload): Promise<Buffer> => {
+        const { xid, usersSession } = payload;
+
+        const category = await this.categoryRepo.findByXid(xid);
+
+        if (!category) {
+            throw errorResponses.getError("E_FOUND_1");
+        }
+
+        if (!category.active && usersSession.audiance !== ROLE.admin) {
+            throw errorResponses.getError("E_FOUND_1");
+        }
+
+        const image = await minioModule.getImage(bucket.categoryBucket, category.path);
+
+        if (!image) {
+            throw errorResponses.getError("E_FOUND_1");
+        }
+
+        return image;
+    };
 }
 
 export function composeCategory(row: CategoryAttributes): CategoryResult {
