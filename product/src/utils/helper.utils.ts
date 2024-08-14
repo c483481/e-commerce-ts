@@ -24,7 +24,21 @@ export function WrapAppHandler(handler: (req: Request) => Promise<unknown> | unk
                 data: result,
             });
         } catch (error) {
-            next(error);
+            return next(error);
+        }
+    };
+}
+
+export function WrapImageHandler(handler: (req: Request) => Promise<Buffer> | Buffer): RequestHandler {
+    return async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+        try {
+            const result = await handler(req);
+
+            res.header("Content-Type", "image/jpg");
+
+            return res.send(result);
+        } catch (error) {
+            return next(error);
         }
     };
 }
