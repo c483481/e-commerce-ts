@@ -11,4 +11,6 @@ export interface CategoryService {
     getByXid(payload: GetDetail_Payload): Promise<CategoryResult>;
 
     getList(payload: List_Payload): Promise<ListResult<CategoryResult>>;
+
+    getDetailImage(payload: GetDetail_Payload): Promise<Buffer>;
 }
