@@ -12,5 +12,5 @@ export interface CategoryRepository {
 
     findList(payload: List_Payload): Promise<FindResult<CategoryAttributes>>;
 
-    getDetailImage(payload: GetDetail_Payload): Promise<Buffer>;
+    update(id: number, payload: Partial<CategoryAttributes>, version: number): Promise<number>;
 }

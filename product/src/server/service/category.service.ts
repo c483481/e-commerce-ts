@@ -1,7 +1,7 @@
-import { ulid } from "ulidx";
+import { isValid, ulid } from "ulidx";
 import { AppRepositoryMap, CategoryRepository } from "../../contract/repository.contract";
-import { compose, composeResult, createData } from "../../utils/helper.utils";
-import { CategoryResult, CreateCategory_Payload } from "../dto/category.dto";
+import { compose, composeResult, createData, updateData } from "../../utils/helper.utils";
+import { CategoryResult, CreateCategory_Payload, UpdateCategory_Payload } from "../dto/category.dto";
 import { CategoryAttributes, CategoryCreationAttributes } from "../model/category.model";
 import { BaseService } from "./base.service";
 import { minioModule } from "../../module/minio.module";
@@ -45,6 +45,10 @@ export class Category extends BaseService implements CategoryService {
     getByXid = async (payload: GetDetail_Payload): Promise<CategoryResult> => {
         const { xid, usersSession } = payload;
 
+        if (!isValid(xid)) {
+            throw errorResponses.getError("E_FOUND_1");
+        }
+
         const category = await this.categoryRepo.findByXid(xid);
 
         if (!category) {
@@ -72,6 +76,10 @@ export class Category extends BaseService implements CategoryService {
     getDetailImage = async (payload: GetDetail_Payload): Promise<Buffer> => {
         const { xid, usersSession } = payload;
 
+        if (!isValid(xid)) {
+            throw errorResponses.getError("E_FOUND_1");
+        }
+
         const category = await this.categoryRepo.findByXid(xid);
 
         if (!category) {
@@ -89,6 +97,56 @@ export class Category extends BaseService implements CategoryService {
         }
 
         return image;
+    };
+
+    update = async (payload: UpdateCategory_Payload): Promise<CategoryResult> => {
+        const { xid, userSession, image, name, version } = payload;
+
+        if (!isValid(xid)) {
+            throw errorResponses.getError("E_FOUND_1");
+        }
+
+        const category = await this.categoryRepo.findByXid(xid);
+
+        if (!category) {
+            throw errorResponses.getError("E_FOUND_1");
+        }
+
+        const updatedValues = updateData<CategoryAttributes>(
+            category,
+            {
+                name,
+            },
+            userSession
+        );
+
+        let fileName!: string;
+
+        if (image) {
+            fileName = `${ulid()}.jpg`;
+            updatedValues.path = fileName;
+        }
+
+        const result = await this.categoryRepo.update(category.id, updatedValues, version);
+
+        if (!result) {
+            throw errorResponses.getError("E_ERR_1");
+        }
+
+        if (fileName && image) {
+            const [deleteStatus, insertStatus] = await Promise.all([
+                minioModule.deleteImage(bucket.categoryBucket, category.path),
+                minioModule.uploadImage(bucket.categoryBucket, fileName, image.data),
+            ]);
+
+            if (!deleteStatus || !insertStatus) {
+                throw errorResponses.getError("E_SER_2");
+            }
+        }
+
+        Object.assign(category, updatedValues);
+
+        return composeCategory(category);
     };
 }
 
