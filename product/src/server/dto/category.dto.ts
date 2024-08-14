@@ -9,7 +9,7 @@ export interface CreateCategory_Payload {
 
 export interface UpdateCategory_Payload extends BaseUpdateAttribute {
     name: string;
-    image?: UploadedFile;
+    image: UploadedFile | null;
     userSession: UserSession;
 }
 

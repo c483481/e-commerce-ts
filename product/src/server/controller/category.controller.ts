@@ -7,7 +7,7 @@ import {
     WrapAppHandler,
     WrapImageHandler,
 } from "../../utils/helper.utils";
-import { CreateCategory_Payload } from "../dto/category.dto";
+import { CreateCategory_Payload, UpdateCategory_Payload } from "../dto/category.dto";
 import { AdminMiddleware } from "../middleware/admin.middleware";
 import { LogInMiddleware } from "../middleware/log-in.middleware";
 import { isValidImage, validate } from "../validate";
@@ -33,6 +33,8 @@ export class CategoryController extends BaseController {
         this.router.get("/", LogInMiddleware, WrapAppHandler(this.getList));
 
         this.router.get("/:xid/image", LogInMiddleware, WrapImageHandler(this.getDetailImage));
+
+        this.router.put("/:xid", AdminMiddleware, WrapAppHandler(this.putUpdateCategory));
     }
 
     postCreateCategory = async (req: Request): Promise<unknown> => {
@@ -75,6 +77,22 @@ export class CategoryController extends BaseController {
         const payload = getDetailOption(req);
 
         const result = await this.service.getDetailImage(payload);
+
+        return result;
+    };
+
+    putUpdateCategory = async (req: Request): Promise<unknown> => {
+        const payload = req.body as UpdateCategory_Payload;
+
+        payload.xid = req.params.xid;
+
+        validate(CategoryValidator.UpdateCategory_Payload, payload);
+
+        payload.image = isValidImage(req.files);
+
+        payload.userSession = getForceUsersSession(req);
+
+        const result = await this.service.update(payload);
 
         return result;
     };
