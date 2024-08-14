@@ -12,4 +12,12 @@ export class SequelizeCategoryRepository extends BaseRepository implements Categ
     insert = async (payload: CategoryCreationAttributes): Promise<CategoryAttributes> => {
         return this.category.create(payload);
     };
+
+    findByXid = async (xid: string): Promise<CategoryAttributes | null> => {
+        return this.category.findOne({
+            where: {
+                xid,
+            },
+        });
+    };
 }
