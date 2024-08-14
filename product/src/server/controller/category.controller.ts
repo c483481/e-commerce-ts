@@ -35,6 +35,8 @@ export class CategoryController extends BaseController {
         this.router.get("/:xid/image", LogInMiddleware, WrapImageHandler(this.getDetailImage));
 
         this.router.put("/:xid", AdminMiddleware, WrapAppHandler(this.putUpdateCategory));
+
+        this.router.delete("/:xid", AdminMiddleware, WrapAppHandler(this.deleteCategory));
     }
 
     postCreateCategory = async (req: Request): Promise<unknown> => {
@@ -95,5 +97,13 @@ export class CategoryController extends BaseController {
         const result = await this.service.update(payload);
 
         return result;
+    };
+
+    deleteCategory = async (req: Request): Promise<unknown> => {
+        const xid = req.params.xid;
+
+        await this.service.delete(xid);
+
+        return "success";
     };
 }

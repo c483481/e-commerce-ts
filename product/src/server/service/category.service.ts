@@ -148,6 +148,32 @@ export class Category extends BaseService implements CategoryService {
 
         return composeCategory(category);
     };
+
+    delete = async (xid: string): Promise<void> => {
+        if (!isValid(xid)) {
+            throw errorResponses.getError("E_FOUND_1");
+        }
+
+        const category = await this.categoryRepo.findByXid(xid);
+
+        if (!category) {
+            throw errorResponses.getError("E_FOUND_1");
+        }
+
+        const result = await this.categoryRepo.deleteById(category.id);
+
+        if (!result) {
+            throw errorResponses.getError("E_FOUND_1");
+        }
+
+        const deleted = await minioModule.deleteImage(bucket.categoryBucket, category.path);
+
+        if (!deleted) {
+            throw errorResponses.getError("E_SER_2");
+        }
+
+        console.log(`delete ${result} of category`);
+    };
 }
 
 export function composeCategory(row: CategoryAttributes): CategoryResult {

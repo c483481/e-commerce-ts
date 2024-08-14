@@ -15,4 +15,6 @@ export interface CategoryService {
     getDetailImage(payload: GetDetail_Payload): Promise<Buffer>;
 
     update(payload: UpdateCategory_Payload): Promise<CategoryResult>;
+
+    delete(xid: string): Promise<void>;
 }

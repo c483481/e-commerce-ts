@@ -66,6 +66,14 @@ export class SequelizeCategoryRepository extends BaseRepository implements Categ
         return result[0];
     };
 
+    deleteById = async (id: number): Promise<number> => {
+        return this.category.destroy({
+            where: {
+                id,
+            },
+        });
+    };
+
     private parseSortBy = (sortBy: string): { order: Order } => {
         // determine sorting option
         let order: Order;

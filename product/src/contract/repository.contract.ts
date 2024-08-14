@@ -13,4 +13,6 @@ export interface CategoryRepository {
     findList(payload: List_Payload): Promise<FindResult<CategoryAttributes>>;
 
     update(id: number, payload: Partial<CategoryAttributes>, version: number): Promise<number>;
+
+    deleteById(id: number): Promise<number>;
 }
