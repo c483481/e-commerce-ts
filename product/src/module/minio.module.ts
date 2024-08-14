@@ -21,7 +21,7 @@ class MinioModule {
         await this.createBucketList(listBucket);
     };
 
-    uploadFile = async (bucket: string, name: string, data: Buffer): Promise<boolean> => {
+    uploadImage = async (bucket: string, name: string, data: Buffer): Promise<boolean> => {
         if (this.setListBucket.has(bucket)) {
             await this.client.putObject(bucket, name, data);
             return true;
@@ -31,7 +31,7 @@ class MinioModule {
         return false;
     };
 
-    getFile = async (bucket: string, name: string): Promise<Buffer | null> => {
+    getImage = async (bucket: string, name: string): Promise<Buffer | null> => {
         try {
             if (!this.setListBucket.has(bucket)) {
                 console.log(`[!] unkown bucket name "${bucket}"`);
@@ -47,7 +47,7 @@ class MinioModule {
             return Buffer.concat(data);
         } catch (error) {
             if (error instanceof S3Error && error.code === "NoSuchKey") {
-                console.log(`[!] unkown file "${name}"`);
+                console.log(`[!] unkown Image "${name}"`);
             } else {
                 console.log(error);
             }
@@ -55,7 +55,7 @@ class MinioModule {
         }
     };
 
-    deleteFile = async (bucket: string, name: string): Promise<boolean> => {
+    deleteImage = async (bucket: string, name: string): Promise<boolean> => {
         try {
             if (!this.setListBucket.has(bucket)) {
                 console.log(`[!] unkown bucket name "${bucket}"`);
@@ -67,7 +67,7 @@ class MinioModule {
             return true;
         } catch (error) {
             if (error instanceof S3Error && error.code === "NoSuchKey") {
-                console.log(`[!] unkown file ${name}`);
+                console.log(`[!] unkown image ${name}`);
             } else {
                 console.log(error);
             }

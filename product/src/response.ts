@@ -95,6 +95,11 @@ export class MapErrorResponse {
                 success: false,
                 message: "Failed To Call Another Service",
             },
+            E_SER_2: {
+                status: 500,
+                success: false,
+                message: "Failed to upload image",
+            },
         };
         Object.entries(response).map(([key, value]) => {
             this.error.set(key, new ErrorResponse(Object.assign(value, { code: key })));
