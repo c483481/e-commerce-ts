@@ -13,6 +13,7 @@ import { errorResponses } from "./response";
 import { bucket } from "./constant/minio.constant";
 import { minioModule } from "./module/minio.module";
 import { amqp } from "./module/amqp.module";
+import fileUpload from "express-fileupload";
 
 start();
 
@@ -76,6 +77,12 @@ function initApi(service: AppServiceMap): express.Application {
         cors({
             origin: config.cors,
             methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+        })
+    );
+
+    app.use(
+        fileUpload({
+            limits: { fileSize: 512 * 1024, fieldSize: 512 * 1024 },
         })
     );
 

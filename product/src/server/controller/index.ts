@@ -1,8 +1,11 @@
 import { Router } from "express";
 import { AppServiceMap } from "../../contract/service.contract";
 import { BaseController } from "./base.controller";
+import { CategoryController } from "./category.controller";
 
 export class Controller {
+    private readonly category: BaseController = new CategoryController();
+
     init(service: AppServiceMap): Router {
         const router = Router();
         Object.entries(this).forEach(([k, r]) => {
