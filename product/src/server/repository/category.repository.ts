@@ -1,4 +1,4 @@
-import { Order, WhereOptions } from "sequelize";
+import { Optional, Order, WhereOptions } from "sequelize";
 import { CategoryRepository } from "../../contract/repository.contract";
 import { AppDataSource } from "../../module/datasource.module";
 import { FindResult, List_Payload } from "../../module/dto.module";
@@ -53,6 +53,17 @@ export class SequelizeCategoryRepository extends BaseRepository implements Categ
             offset,
             order,
         });
+    };
+
+    update = async (id: number, payload: Partial<CategoryAttributes>, version: number): Promise<number> => {
+        const result = await this.category.update(payload, {
+            where: {
+                id,
+                version,
+            },
+        });
+
+        return result[0];
     };
 
     private parseSortBy = (sortBy: string): { order: Order } => {

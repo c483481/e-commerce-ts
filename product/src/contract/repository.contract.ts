@@ -11,4 +11,6 @@ export interface CategoryRepository {
     findByXid(xid: string): Promise<CategoryAttributes | null>;
 
     findList(payload: List_Payload): Promise<FindResult<CategoryAttributes>>;
+
+    update(id: number, payload: Partial<CategoryAttributes>, version: number): Promise<number>;
 }
