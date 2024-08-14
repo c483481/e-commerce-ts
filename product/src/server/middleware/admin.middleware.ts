@@ -34,7 +34,11 @@ export async function AdminMiddleware(req: Request, _res: Response, next: NextFu
         return next(ERROR_FORBIDDEN);
     }
 
-    const userSession: UserSession = { email: verification.email, xid: verification.xid } as UserSession;
+    const userSession: UserSession = {
+        email: verification.email,
+        xid: verification.xid,
+        audiance: verification.audiance,
+    } as UserSession;
 
     userSession.ip = getIp(req);
 
