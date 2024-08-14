@@ -11,6 +11,4 @@ export interface CategoryRepository {
     findByXid(xid: string): Promise<CategoryAttributes | null>;
 
     findList(payload: List_Payload): Promise<FindResult<CategoryAttributes>>;
-
-    getDetailImage(payload: GetDetail_Payload): Promise<Buffer>;
 }
