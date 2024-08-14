@@ -1,14 +1,15 @@
 import { ulid } from "ulidx";
 import { AppRepositoryMap, CategoryRepository } from "../../contract/repository.contract";
-import { composeResult, createData } from "../../utils/helper.utils";
+import { compose, composeResult, createData } from "../../utils/helper.utils";
 import { CategoryResult, CreateCategory_Payload } from "../dto/category.dto";
 import { CategoryAttributes, CategoryCreationAttributes } from "../model/category.model";
 import { BaseService } from "./base.service";
 import { minioModule } from "../../module/minio.module";
 import { bucket } from "../../constant/minio.constant";
 import { errorResponses } from "../../response";
-import { GetDetail_Payload } from "../../module/dto.module";
+import { GetDetail_Payload, List_Payload, ListResult } from "../../module/dto.module";
 import { CategoryService } from "../../contract/service.contract";
+import { ROLE } from "../../constant/role.constant";
 
 export class Category extends BaseService implements CategoryService {
     private categoryRepo!: CategoryRepository;
@@ -50,11 +51,22 @@ export class Category extends BaseService implements CategoryService {
             throw errorResponses.getError("E_FOUND_1");
         }
 
-        if (!category.active && usersSession.audiance !== "admin") {
+        if (!category.active && usersSession.audiance !== ROLE.admin) {
             throw errorResponses.getError("E_FOUND_1");
         }
 
         return composeCategory(category);
+    };
+
+    getList = async (payload: List_Payload): Promise<ListResult<CategoryResult>> => {
+        const result = await this.categoryRepo.findList(payload);
+
+        const items = compose(result.rows, composeCategory);
+
+        return {
+            items,
+            count: result.count,
+        };
     };
 }
 
