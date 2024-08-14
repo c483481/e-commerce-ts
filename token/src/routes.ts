@@ -54,7 +54,7 @@ routes.get("/check_at", (req: Request, res: Response, next: NextFunction) => {
         return res.status(200).json({
             xid,
             email,
-            audiance: audiance ? audiance : null,
+            audiance: verification.aud ? verification.aud : null,
         });
     } catch (error) {
         return res.status(403).json({

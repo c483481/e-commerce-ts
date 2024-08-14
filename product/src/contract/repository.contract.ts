@@ -6,4 +6,6 @@ export interface AppRepositoryMap {
 
 export interface CategoryRepository {
     insert(payload: CategoryCreationAttributes): Promise<CategoryAttributes>;
+
+    findByXid(xid: string): Promise<CategoryAttributes | null>;
 }

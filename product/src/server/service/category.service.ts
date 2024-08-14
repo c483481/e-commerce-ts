@@ -7,8 +7,10 @@ import { BaseService } from "./base.service";
 import { minioModule } from "../../module/minio.module";
 import { bucket } from "../../constant/minio.constant";
 import { errorResponses } from "../../response";
+import { GetDetail_Payload } from "../../module/dto.module";
+import { CategoryService } from "../../contract/service.contract";
 
-export class Category extends BaseService {
+export class Category extends BaseService implements CategoryService {
     private categoryRepo!: CategoryRepository;
     init(repository: AppRepositoryMap): void {
         this.categoryRepo = repository.category;
@@ -37,6 +39,22 @@ export class Category extends BaseService {
         }
 
         return composeCategory(result);
+    };
+
+    getByXid = async (payload: GetDetail_Payload): Promise<CategoryResult> => {
+        const { xid, usersSession } = payload;
+
+        const category = await this.categoryRepo.findByXid(xid);
+
+        if (!category) {
+            throw errorResponses.getError("E_FOUND_1");
+        }
+
+        if (!category.active && usersSession.audiance !== "admin") {
+            throw errorResponses.getError("E_FOUND_1");
+        }
+
+        return composeCategory(category);
     };
 }
 

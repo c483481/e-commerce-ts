@@ -1,8 +1,9 @@
 import { AppServiceMap, CategoryService } from "../../contract/service.contract";
 import { errorResponses } from "../../response";
-import { getForceUsersSession, WrapAppHandler } from "../../utils/helper.utils";
+import { getDetailOption, getForceUsersSession, WrapAppHandler } from "../../utils/helper.utils";
 import { CreateCategory_Payload } from "../dto/category.dto";
 import { AdminMiddleware } from "../middleware/admin.middleware";
+import { LogInMiddleware } from "../middleware/log-in.middleware";
 import { isValidImage, validate } from "../validate";
 import { CategoryValidator } from "../validate/category.validator";
 import { BaseController } from "./base.controller";
@@ -20,6 +21,8 @@ export class CategoryController extends BaseController {
 
     initRoute(): void {
         this.router.post("/", AdminMiddleware, WrapAppHandler(this.postCreateCategory));
+
+        this.router.get("/:xid", LogInMiddleware, WrapAppHandler(this.getDetail));
     }
 
     postCreateCategory = async (req: Request): Promise<unknown> => {
@@ -38,6 +41,14 @@ export class CategoryController extends BaseController {
         payload.userSession = getForceUsersSession(req);
 
         const result = await this.service.create(payload);
+
+        return result;
+    };
+
+    getDetail = async (req: Request): Promise<unknown> => {
+        const payload = getDetailOption(req);
+
+        const result = await this.service.getByXid(payload);
 
         return result;
     };

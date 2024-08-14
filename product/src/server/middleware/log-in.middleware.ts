@@ -4,9 +4,8 @@ import { compareString } from "../../utils/compare.utils";
 import { getIp, saveUsersSession } from "../../utils/helper.utils";
 import { UserSession } from "../../module/dto.module";
 import { tokenModule } from "../../module/token.module";
-import { ROLE } from "../../constant/role.constant";
 
-export async function AdminMiddleware(req: Request, _res: Response, next: NextFunction): Promise<void> {
+export async function LogInMiddleware(req: Request, _res: Response, next: NextFunction): Promise<void> {
     const accessToken = req.headers.authorization;
 
     if (!accessToken) {
@@ -20,7 +19,7 @@ export async function AdminMiddleware(req: Request, _res: Response, next: NextFu
         return;
     }
 
-    const verification = await tokenModule.checkAccessToken(token, ROLE.admin);
+    const verification = await tokenModule.checkAccessToken(token);
 
     if (!verification) {
         return next(errorResponses.getError("E_SER_1"));
@@ -34,11 +33,9 @@ export async function AdminMiddleware(req: Request, _res: Response, next: NextFu
         return next(ERROR_FORBIDDEN);
     }
 
-    const userSession: UserSession = {
-        email: verification.email,
-        xid: verification.xid,
-        audiance: verification.audiance,
-    } as UserSession;
+    verification;
+
+    const userSession: UserSession = { email: verification.email, xid: verification.xid } as UserSession;
 
     userSession.ip = getIp(req);
 

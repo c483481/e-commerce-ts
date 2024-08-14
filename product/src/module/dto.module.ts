@@ -11,6 +11,7 @@ export interface ListResult<T> {
 export type UserSession = {
     xid: string;
     email: string;
+    audiance: string | null;
     ip: string;
 };
 
